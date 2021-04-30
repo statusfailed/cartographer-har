@@ -51,9 +51,9 @@ class HAR:
         return HAR(M, L, R, self.arity)
     
     def right_boundary_order(self):
-        M = self.L @ self.M @ self.L.T # isomorphic graph
-        L = np.identity(self.size, self.L.dtype)
-        R = self.R @ self.L.T
+        M = self.R @ self.M @ self.R.T # isomorphic graph
+        R = np.identity(self.size, self.L.dtype)
+        L = self.L @ self.R.T
         return HAR(M, L, R, self.arity)
     
     @staticmethod
@@ -68,8 +68,8 @@ class HAR:
         n = a + b + 1
         
         M = np.zeros((n, n), dtype=dtype)
-        M[a, :a] = 1 # TODO: np.arange! to get 1, 2, 3 ...
-        M[a+1:, a] = 1
+        M[a, :a] = np.arange(0, a) + 1 # TODO: np.arange! to get 1, 2, 3 ...
+        M[a+1:, a] = np.arange(0, b) + 1
         
         L = np.identity(n, int) # NOTE: this means that in "left-boundary order", left nodes come first.
         R = np.identity(n, int)
@@ -80,7 +80,7 @@ class HAR:
         a2, b2 = g.arity
 
         M = direct_sum(f.M, g.M)
-        L = exchange(f.size - a1, a1, g.size - a2, a2, f.L.dtype) @ direct_sum(f.L, g.L)
+        L = exchange(a1, f.size - a1, a2, g.size - a2, f.L.dtype) @ direct_sum(f.L, g.L)
         R = exchange(f.size - b1, b1, g.size - b2, b2, g.L.dtype) @ direct_sum(f.R, g.R)
 
         return HAR(M, L, R, (a1 + a2, b1 + b2))
