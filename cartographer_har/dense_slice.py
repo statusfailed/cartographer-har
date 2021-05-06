@@ -11,28 +11,28 @@ class HAR:
         # Number of node labels must be equal to matrix dimensions
         assert N.shape[0] == M.shape[0]
         self.N = N
-        
+
         # TODO: assert L and R must be permutations (A (resp. B) unique values in [0, self.size])
         assert L.shape == (size, size)
         self.L = L
-        
+
         assert R.shape == (size, size)
         self.R = R
-        
+
         self.arity = np.array(arity)
-    
+
     @property
     def size(self):
         return self.M.shape[0]
-    
+
     @property
     def dom(self):
         return self.arity[0]
-    
+
     @property
     def cod(self):
         return self.arity[1]
-    
+
     @staticmethod
     def identity(n, dtype=int):
         return HAR(
@@ -41,7 +41,7 @@ class HAR:
             R=np.identity(n, dtype),
             N=np.zeros(n, dtype), # every node represents a "wire"
             arity=(n, n))
-    
+
     # TODO: general permutations instead of twists
     @staticmethod
     def twist(a, b, dtype=int):
@@ -53,21 +53,21 @@ class HAR:
             N=np.zeros(n, dtype), # discrete graph, all nodes represent wires
             arity=(n, n),
         )
-    
+
     def left_boundary_order(self):
         M = self.L @ self.M @ self.L.T # isomorphic graph
         L = np.identity(self.size, self.L.dtype)
         R = self.R @ self.L.T
         N = self.L @ self.N # TODO: checkme
         return HAR(M, L, R, N, self.arity)
-    
+
     def right_boundary_order(self):
         M = self.R @ self.M @ self.R.T # isomorphic graph
         R = np.identity(self.size, self.L.dtype)
         L = self.L @ self.R.T
         N = self.R @ self.N
         return HAR(M, L, R, N, self.arity)
-    
+
     # NOTE: we assume the label is encoded as an int
     @staticmethod
     def singleton(label: int, arity, dtype=int):
@@ -79,18 +79,18 @@ class HAR:
         a = arity[0]
         b = arity[1]
         n = a + b + 1
-        
+
         M = np.zeros((n, n), dtype=dtype)
         M[a, :a] = np.arange(0, a) + 1 # TODO: np.arange! to get 1, 2, 3 ...
         M[a+1:, a] = np.arange(0, b) + 1
 
         N = np.zeros(n, dtype)
         N[a] = label
-        
+
         L = np.identity(n, int) # NOTE: this means that in "left-boundary order", left nodes come first.
         R = np.identity(n, int)
         return HAR(M, L, R, N, np.array(arity))
-    
+
     def tensor(f, g):
         a1, b1 = f.arity
         a2, b2 = g.arity
@@ -101,7 +101,7 @@ class HAR:
         N = np.append(f.N, g.N)
 
         return HAR(M, L, R, N, (a1 + a2, b1 + b2))
-    
+
     def compose(f, g):
         f = f.right_boundary_order()
         g = g.left_boundary_order()
@@ -114,3 +114,11 @@ class HAR:
         N = np.append(f.N, g.N[b:])
 
         return HAR(M, L, R, N, (a, c))
+
+    # infix for tensor
+    def __matmul__(f, g):
+        return f.tensor(g)
+
+    # infix for composition
+    def __rshift__(f, g):
+        return f.compose(g)

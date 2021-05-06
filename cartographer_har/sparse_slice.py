@@ -61,28 +61,28 @@ class HAR:
         # Number of node labels must be equal to matrix dimensions
         assert N.shape[0] == M.shape[0]
         self.N = N
-        
+
         # TODO: assert L and R must be permutations (A (resp. B) unique values in [0, self.size])
         assert L.shape == (size, size)
         self.L = L
-        
+
         assert R.shape == (size, size)
         self.R = R
-        
+
         self.arity = np.array(arity)
-    
+
     @property
     def size(self):
         return self.M.shape[0]
-    
+
     @property
     def dom(self):
         return self.arity[0]
-    
+
     @property
     def cod(self):
         return self.arity[1]
-    
+
     @staticmethod
     def identity(n, dtype=int):
         return HAR(
@@ -92,7 +92,7 @@ class HAR:
             # NOTE: scipy sparse needs explicit dimensions for SpGEMV
             N=Sparse.zeros((n, 1), dtype),
             arity=(n, n))
-    
+
     # TODO: general permutations instead of twists
     @staticmethod
     def twist(a, b, dtype=int):
@@ -104,28 +104,28 @@ class HAR:
             N=Sparse.zeros((n, 1), dtype),
             arity=(n, n),
         )
-    
+
     def left_boundary_order(self):
         M = self.L @ self.M @ self.L.T # isomorphic graph
         L = Sparse.identity(self.size, self.L.dtype)
         R = self.R @ self.L.T
         N = self.L @ self.N
         return HAR(M, L, R, N, self.arity)
-    
+
     def right_boundary_order(self):
         M = self.R @ self.M @ self.R.T # isomorphic graph
         R = Sparse.identity(self.size, self.L.dtype)
         L = self.L @ self.R.T
         N = self.R @ self.N
         return HAR(M, L, R, N, self.arity)
-    
+
     # NOTE: we assume the label is encoded as an int
     @staticmethod
     def singleton(label: int, arity, dtype=int):
         a = arity[0]
         b = arity[1]
         n = a + b + 1
-        
+
         # NOTE: we construct as a dense matrix and then convert to sparse
         M = np.zeros((n, n), dtype=dtype)
         M[a, :a] = np.arange(0, a) + 1
@@ -135,11 +135,11 @@ class HAR:
         N = Sparse.zeros((n, 1), dtype, format='lil')
         N[a] = label
         N = sp.csr_matrix(N)
-        
+
         L = Sparse.identity(n, int)
         R = Sparse.identity(n, int)
         return HAR(M, L, R, N, np.array(arity))
-    
+
     def tensor(f, g):
         a1, b1 = f.arity
         a2, b2 = g.arity
@@ -152,10 +152,6 @@ class HAR:
 
         return HAR(M, L, R, N, (a1 + a2, b1 + b2))
 
-    # infix for tensor
-    def __matmul__(f, g):
-        return f.tensor(g)
-    
     def compose(f, g):
         f = f.right_boundary_order()
         g = g.left_boundary_order()
@@ -169,5 +165,10 @@ class HAR:
 
         return HAR(M, L, R, N, (a, c))
 
+    # infix for tensor
+    def __matmul__(f, g):
+        return f.tensor(g)
+
+    # infix for composition
     def __rshift__(f, g):
         return f.compose(g)
