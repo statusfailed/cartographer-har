@@ -151,6 +151,10 @@ class HAR:
         N = sp.vstack([f.N, g.N])
 
         return HAR(M, L, R, N, (a1 + a2, b1 + b2))
+
+    # infix for tensor
+    def __matmul__(f, g):
+        return f.tensor(g)
     
     def compose(f, g):
         f = f.right_boundary_order()
@@ -164,3 +168,6 @@ class HAR:
         N = sp.vstack([f.N, g.N[b:]])
 
         return HAR(M, L, R, N, (a, c))
+
+    def __rshift__(f, g):
+        return f.compose(g)
