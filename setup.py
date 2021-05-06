@@ -9,4 +9,5 @@ setup(
     url='',
     packages=['cartographer_har'],
     install_requires=['numpy', 'scipy'],
+    # dev deps: asv, virtualenv
 )
