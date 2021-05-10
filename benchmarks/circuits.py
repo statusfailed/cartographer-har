@@ -131,7 +131,7 @@ class SyntheticBenchmark(HarBenchmark):
         # compute the basic building block before running the benchmark
         self.adder = adder(n)
 
-    # Construct an n-bit adder from two n-1 bit adders.
+    # Construct a 2^(n+1)-bit adder from two 2^n-1 bit adders.
     def time_n_bit_adder(self, n):
         id = HAR.identity(2**n)
         return (self.adder @ id @ id) >> (id @ self.adder)
