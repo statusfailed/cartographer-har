@@ -159,8 +159,8 @@ class HAR:
         b, c = g.arity
 
         M = Sparse.direct_sums([f.M[:, :f.size-b], g.M[b:, :]])
-        L = Sparse.direct_sums([f.L, np.identity(g.size - b, g.L.dtype)])
-        R = Sparse.direct_sums([np.identity(f.size - b, f.R.dtype), g.R])
+        L = Sparse.direct_sums([f.L, Sparse.identity(g.size - b, g.L.dtype)])
+        R = Sparse.direct_sums([Sparse.identity(f.size - b, f.R.dtype), g.R])
         N = sp.vstack([f.N, g.N[b:]])
 
         return HAR(M, L, R, N, (a, c))
