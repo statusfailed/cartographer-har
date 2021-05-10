@@ -1,0 +1,10 @@
+{
+    "version": 1,
+    "project": "cartographer-har",
+    "project_url": "https://github.com/statusfailed/cartographer-har/",
+    "repo": ".",
+    "environment_type": "virtualenv",
+    "env_dir": ".asv/env",
+    "results_dir": ".asv/results",
+    "html_dir": ".asv/html"
+}
