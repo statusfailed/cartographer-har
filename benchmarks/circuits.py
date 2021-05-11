@@ -117,14 +117,12 @@ class ComposeLargeBoundary:
         self.lhs = acc
         self.rhs = acc
 
-    def time_tensor(self, n):
+    def time_large_boundary(self, n):
         self.lhs >> self.rhs
 
 class AdderCircuit:
     def setup(self, n):
         pass
-
-    # def time_
 
 class SyntheticBenchmark(HarBenchmark):
     def setup(self, n):
