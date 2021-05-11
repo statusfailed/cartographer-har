@@ -109,7 +109,7 @@ class ComposeSmallBoundary(HarBenchmark):
     def time_small_boundary(self, n):
         self.lhs >> self.rhs
 
-class ComposeLargeBoundary:
+class ComposeLargeBoundary(HarBenchmark):
     def setup(self, n):
         acc = Gate.NOT.HAR
         for i in range(0, n):
