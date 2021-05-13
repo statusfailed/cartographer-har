@@ -120,10 +120,6 @@ class ComposeLargeBoundary(HarBenchmark):
     def time_large_boundary(self, n):
         self.lhs >> self.rhs
 
-class AdderCircuit:
-    def setup(self, n):
-        pass
-
 class SyntheticBenchmark(HarBenchmark):
     def setup(self, n):
         # compute the basic building block before running the benchmark
