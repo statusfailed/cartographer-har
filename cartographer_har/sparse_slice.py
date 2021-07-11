@@ -62,7 +62,6 @@ class HAR:
         assert N.shape[0] == M.shape[0]
         self.N = N
 
-        # TODO: assert L and R must be permutations (A (resp. B) unique values in [0, self.size])
         assert L.shape == (size, size)
         self.L = L
 
@@ -93,7 +92,6 @@ class HAR:
             N=Sparse.zeros((n, 1), dtype),
             arity=(n, n))
 
-    # TODO: general permutations instead of twists
     @staticmethod
     def twist(a, b, dtype=int):
         n = a + b
@@ -147,7 +145,6 @@ class HAR:
         M = Sparse.direct_sums([f.M, g.M], format='csr')
         L = Sparse.exchange(a1, f.size - a1, a2, g.size - a2, f.L.dtype) @ Sparse.direct_sum(f.L, g.L)
         R = Sparse.exchange(f.size - b1, b1, g.size - b2, b2, g.L.dtype) @ Sparse.direct_sum(f.R, g.R)
-        # TODO: not generic!
         N = sp.vstack([f.N, g.N])
 
         return HAR(M, L, R, N, (a1 + a2, b1 + b2))
