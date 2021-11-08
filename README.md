@@ -4,6 +4,7 @@ This is an implementation of HARs: a datastructure (and algorithms) for
 implementing string diagrams using sparse adjacency matrices.
 
 It accompanies [this paper](https://arxiv.org/abs/2105.09257)
+and [this talk](https://youtu.be/We7FuoOCxyA?t=7937)
 
 For the **sparse-matrix-based implementation**, see the file
 [cartographer_har/sparse_slice.py](cartographer_har/sparse_slice.py)
