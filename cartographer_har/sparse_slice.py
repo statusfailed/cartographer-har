@@ -150,6 +150,7 @@ class HAR:
         return HAR(M, L, R, N, (a1 + a2, b1 + b2))
 
     def compose(f, g):
+        assert f.cod == g.dom
         f = f.right_boundary_order()
         g = g.left_boundary_order()
         a, b = f.arity

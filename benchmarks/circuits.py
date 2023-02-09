@@ -38,7 +38,7 @@ def ex():
     return HAR.identity(1) @ HAR.twist(1, 1) @ HAR.identity(1)
 
 def copy2():
-    return Gate.COPY.HAR >> ex()
+    return (Gate.COPY.HAR @ Gate.COPY.HAR) >> ex()
 
 # copy_2 ; (xor × and)
 def add_mul():
@@ -65,15 +65,12 @@ def adder(n):
     # definitely consider this an n-bit adder.
     if n < 0:
         raise ValueError("Can't construct an n-bit adder for n < 0")
-    if n == 0:
-        # If an n-bit full adder is (Cin × n × n) → (n × Cout) then this makes sense :-)
-        return HAR.identity(1)
-    elif n == 1:
+    elif n == 0:
         return full_adder()
     else:
-        id = HAR.identity(2**(n - 1))
+        id = HAR.identity(2**(n - 1)) # arity is bitwidth of inputs
         a = adder(n - 1) # recurse
-        return (a @ id @ id) >> (id @ a)
+        return (a @ id) >> a
     
     return circuit
 
@@ -128,4 +125,4 @@ class SyntheticBenchmark(HarBenchmark):
     # Construct a 2^(n+1)-bit adder from two 2^n-1 bit adders.
     def time_n_bit_adder(self, n):
         id = HAR.identity(2**n)
-        return (self.adder @ id @ id) >> (id @ self.adder)
+        return (self.adder @ id) >> self.adder
